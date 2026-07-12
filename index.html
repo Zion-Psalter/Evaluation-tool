@@ -176,6 +176,7 @@
     color:var(--gold-light);
     margin-top:2px;
   }
+  .slider-value.hidden{ display:none; }
   .clear-link{
     background:none;
     border:none;
@@ -405,7 +406,7 @@
   // CONFIG — paste your deployed Apps Script Web App URL here.
   // ------------------------------------------------------------------
   var CONFIG = {
-    API_URL: 'PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE'
+    API_URL: 'https://script.google.com/macros/s/AKfycbzIU9E6haUVlmQtMKsrS-jXeBF89TTPJ5iwKRtZjpvgc1d1ViOArwMruabPYyryqyuUmw/exec'
   };
 
   var form = document.getElementById('eval-form');
@@ -519,6 +520,26 @@
   });
 
   // ---------------- Sliders -------------------------------------------
+  // No numeric value is ever shown or announced — position between the two
+  // end labels is the entire answer. SLIDER_MEANINGS backs a qualitative
+  // aria-valuetext so screen reader users get the same "intuitive, no
+  // numbers" experience instead of a raw "5" being announced.
+  var SLIDER_MEANINGS = {
+    textualVariance: ['Accommodated', 'Precise to English Translation'],
+    mood: ['Dark, Pensive, Dramatic', 'Bright, Lively, Upbeat'],
+    congregational: ['Difficult, Irregular', 'Easy, Regular Melody/Structure']
+  };
+
+  function describePosition(key, value){
+    var labels = SLIDER_MEANINGS[key];
+    var left = labels[0], right = labels[1];
+    if (value <= 1) return 'Strongly leaning: ' + left;
+    if (value <= 3) return 'Leaning: ' + left;
+    if (value <= 6) return 'Balanced, between ' + left + ' and ' + right;
+    if (value <= 8) return 'Leaning: ' + right;
+    return 'Strongly leaning: ' + right;
+  }
+
   var sliderFields = Array.prototype.slice.call(document.querySelectorAll('.slider-field'));
   var sliderState = {}; // key -> value or null
 
@@ -529,22 +550,25 @@
     var clearBtn = field.querySelector('[data-role="clear"]');
     var errorEl = field.querySelector('[data-role="error"]');
     sliderState[key] = null;
+    range.setAttribute('aria-valuetext', 'No answer yet');
 
     range.addEventListener('input', function(){
       field.classList.remove('unanswered');
       // Internally we still store a 0-10 value (needed for averaging in the
-      // sheet), but nothing numeric is ever shown in the UI — the slider
+      // sheet), but nothing numeric is ever shown or announced — the slider
       // position itself is the answer.
       sliderState[key] = Number(range.value);
-      valueLabel.style.visibility = 'hidden';
+      range.setAttribute('aria-valuetext', describePosition(key, sliderState[key]));
+      valueLabel.classList.add('hidden');
       errorEl.classList.remove('show');
     });
 
     clearBtn.addEventListener('click', function(){
       field.classList.add('unanswered');
       sliderState[key] = null;
-      valueLabel.style.visibility = 'visible';
+      valueLabel.classList.remove('hidden');
       range.value = 5;
+      range.setAttribute('aria-valuetext', 'No answer yet');
     });
   });
 
@@ -664,8 +688,10 @@
             var key = field.getAttribute('data-slider');
             field.classList.add('unanswered');
             sliderState[key] = null;
-            field.querySelector('[data-role="value-label"]').style.visibility = 'visible';
-            field.querySelector('[data-role="range"]').value = 5;
+            field.querySelector('[data-role="value-label"]').classList.remove('hidden');
+            var rangeEl = field.querySelector('[data-role="range"]');
+            rangeEl.value = 5;
+            rangeEl.setAttribute('aria-valuetext', 'No answer yet');
           });
         } else {
           showStatus('error', (json && json.error) || 'Something went wrong. Please try again.');
