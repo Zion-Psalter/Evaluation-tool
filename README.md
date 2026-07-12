@@ -122,8 +122,8 @@ Edit the relevant `<div class="field">` block in `index.html`, then add/remove t
 **Change the color palette or fonts**
 Everything is driven by CSS custom properties in the `:root` block at the top of `<style>` (`--navy-900`, `--gold`, `--font-display`, etc.). Change the values there rather than hunting for individual colors in the rest of the file. Current values match the brand tokens in this project's `Brand.md` and the Song Database browser (`zion-psalms-browser_6.html`) — Fraunces for display type, Inter for body, same navy/gold/parchment palette.
 
-**Change the rating scale (currently 0–10, hidden from the UI)**
-Update `min`/`max` on the three `<input type="range">` elements, and the `RATE...` values are stored as-is in `Code.gs` — no other scaling logic exists. The UI intentionally never displays the numeric value (see `visibility: hidden` toggling in the slider JS) — if that should change, look for `valueLabel.style.visibility`.
+**Change the rating scale (currently 0–10, never shown or announced in the UI)**
+Update `min`/`max` on the three `<input type="range">` elements; values are stored as-is in `Code.gs` — no other scaling logic exists. The UI intentionally never displays or announces the numeric value — only the slider's position between the two end labels is the answer. This is deliberate for both sighted and screen-reader users: the `.slider-value` hint text ("Drag the slider to answer") is toggled with the `hidden` class once a value is set (see `valueLabel.classList` in the slider JS), and each `<input type="range">` gets a qualitative `aria-valuetext` (e.g. "Leaning: Bright, Lively, Upbeat") instead of letting the browser announce the raw number — see `describePosition()` and `SLIDER_MEANINGS` near the top of the sliders section. If you ever want numbers back, remove the `aria-valuetext` calls and re-add a value display.
 
 **Point at a different catalog tab or column names**
 Change `CATALOG_SHEET_INDEX`, `TRACK_COL_NAME`, `ARTIST_COL_NAME`, `COMBINED_COL_NAME` at the top of `Code.gs`, redeploy (§4).
