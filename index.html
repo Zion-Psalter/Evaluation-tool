@@ -1,0 +1,685 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Zion Psalter — Evaluation Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    /* Zion Psalter brand tokens */
+    --navy-900:#1C2333;   /* --ink */
+    --navy-800:#262E44;   /* --ink-2 */
+    --navy-700:#323C58;   /* --ink-3 */
+    --parchment:#EDE6D3;
+    --parchment-2:#E1D8BE;
+    --gold:#C79A3F;
+    --gold-dim:#8E7333;
+    --pine:#4A6B5E;
+    --pine-dim:#34473F;
+    --gold-light:var(--parchment);
+    --ink:#F1ECE0;         /* --text-light */
+    --ink-dim:#9FA6BE;     /* --text-muted */
+    --danger:#B85C4A;
+    --ok:var(--pine);
+    --radius:3px;
+    --font-display:'Fraunces', serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:var(--font-body);
+    background:var(--navy-900);
+    color:var(--ink);
+    line-height:1.5;
+  }
+  .wrap{
+    max-width:720px;
+    margin:0 auto;
+    padding:48px 24px 96px;
+  }
+  header.page-head{
+    margin:-48px -24px 32px;
+    padding:44px 24px 28px;
+    border-bottom:1px solid var(--navy-700);
+    background:
+      radial-gradient(ellipse 800px 200px at 15% -20%, rgba(199,154,63,0.12), transparent);
+  }
+  header.page-head h1{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:2.4rem;
+    margin:0 0 4px;
+    color:var(--gold-light);
+    letter-spacing:0.01em;
+  }
+  header.page-head p.subtitle{
+    font-family:var(--font-display);
+    margin:0 0 12px;
+    font-weight:600;
+    font-size:1.05rem;
+    color:var(--ink);
+  }
+  header.page-head p.intro{
+    margin:0;
+    font-style:italic;
+    color:var(--ink-dim);
+    font-size:0.95rem;
+  }
+  section{
+    margin-top:36px;
+  }
+  section h2{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:1.4rem;
+    color:var(--gold-light);
+    margin:0 0 4px;
+    border-bottom:1px solid var(--navy-700);
+    padding-bottom:8px;
+  }
+  section > p.section-note{
+    margin:8px 0 20px;
+    color:var(--ink-dim);
+    font-size:0.92rem;
+  }
+  .field{
+    margin-bottom:24px;
+  }
+  .field > label, .field > .label{
+    display:block;
+    font-weight:bold;
+    margin-bottom:6px;
+  }
+  .field .hint{
+    display:block;
+    font-weight:normal;
+    color:var(--ink-dim);
+    font-size:0.85rem;
+    margin-top:2px;
+  }
+  .required-mark{ color:var(--gold); margin-left:2px; }
+  input[type="text"],
+  input[type="email"],
+  input[type="url"]{
+    width:100%;
+    padding:10px 12px;
+    border-radius:var(--radius);
+    border:1px solid var(--navy-700);
+    background:rgba(255,255,255,0.04);
+    color:var(--ink);
+    font-family:inherit;
+    font-size:1rem;
+  }
+  input::placeholder{ color:var(--ink-dim); }
+  input:focus, textarea:focus{
+    outline:2px solid var(--gold);
+    outline-offset:1px;
+  }
+
+  /* Combobox / autocomplete */
+  .combo{ position:relative; }
+  .combo-list{
+    position:absolute;
+    z-index:20;
+    top:calc(100% + 4px);
+    left:0; right:0;
+    max-height:280px;
+    overflow-y:auto;
+    background:var(--navy-800);
+    border:1px solid var(--navy-700);
+    border-radius:var(--radius);
+    box-shadow:0 12px 24px rgba(0,0,0,0.35);
+    display:none;
+  }
+  .combo-list.open{ display:block; }
+  .combo-option{
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:0.95rem;
+  }
+  .combo-option.active, .combo-option:hover{
+    background:var(--navy-700);
+  }
+  .combo-empty{
+    padding:9px 12px;
+    color:var(--ink-dim);
+    font-size:0.9rem;
+  }
+  .combo-selected-tag{
+    margin-top:8px;
+    font-size:0.88rem;
+    color:var(--ok);
+    display:none;
+  }
+  .combo-selected-tag.show{ display:block; }
+
+  /* Sliders */
+  .slider-field .slider-labels{
+    display:flex;
+    justify-content:space-between;
+    font-size:0.82rem;
+    color:var(--ink-dim);
+    margin-top:6px;
+  }
+  input[type="range"]{
+    width:100%;
+    accent-color:var(--gold);
+    height:22px;
+  }
+  .slider-value{
+    font-size:0.85rem;
+    color:var(--gold-light);
+    margin-top:2px;
+  }
+  .clear-link{
+    background:none;
+    border:none;
+    color:var(--ink-dim);
+    text-decoration:underline;
+    font-size:0.82rem;
+    cursor:pointer;
+    padding:0;
+    margin-top:6px;
+  }
+  .slider-field.unanswered input[type="range"]{ opacity:0.55; }
+
+  /* Checkbox groups */
+  .checkbox-row{
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+    margin-bottom:8px;
+    font-size:0.97rem;
+  }
+  .checkbox-row input[type="checkbox"]{
+    margin-top:3px;
+    width:16px;height:16px;
+    accent-color:var(--gold);
+  }
+
+  /* File upload */
+  .dropzone{
+    border:2px dashed var(--navy-700);
+    border-radius:var(--radius);
+    padding:24px;
+    text-align:center;
+    color:var(--ink-dim);
+    background:rgba(255,255,255,0.02);
+  }
+  .dropzone.drag{ border-color:var(--gold); color:var(--ink); }
+  .dropzone label{ color:var(--gold-light); text-decoration:underline; cursor:pointer; }
+  .file-list{ margin-top:10px; font-size:0.85rem; color:var(--ink-dim); }
+
+  /* Honeypot - visually hidden but present in DOM */
+  .hp-field{
+    position:absolute;
+    left:-9999px;
+    top:-9999px;
+    width:1px;height:1px;
+    overflow:hidden;
+  }
+
+  button#submit-btn{
+    background:var(--gold);
+    color:var(--navy-900);
+    border:none;
+    padding:13px 28px;
+    font-size:1.05rem;
+    font-weight:bold;
+    border-radius:var(--radius);
+    cursor:pointer;
+    font-family:inherit;
+  }
+  button#submit-btn:disabled{ opacity:0.6; cursor:progress; }
+  button#submit-btn:hover:not(:disabled){ background:var(--gold-light); }
+
+  #form-status{
+    margin-top:16px;
+    padding:12px 14px;
+    border-radius:var(--radius);
+    display:none;
+    font-size:0.95rem;
+  }
+  #form-status.show{ display:block; }
+  #form-status.ok{ background:rgba(111,191,139,0.15); border:1px solid var(--ok); color:var(--ok); }
+  #form-status.error{ background:rgba(226,104,92,0.15); border:1px solid var(--danger); color:var(--danger); }
+
+  .field-error{
+    color:var(--danger);
+    font-size:0.85rem;
+    margin-top:6px;
+    display:none;
+  }
+  .field-error.show{ display:block; }
+
+  footer.made-with{
+    margin-top:48px;
+    text-align:center;
+    color:var(--ink-dim);
+    font-size:0.8rem;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="page-head">
+    <h1>Zion Psalter</h1>
+    <p class="subtitle">Psalm Evaluation Online Form</p>
+    <p class="intro">Simple evaluation. This will be averaged with all other participants.</p>
+  </header>
+
+  <form id="eval-form" novalidate>
+
+    <div class="field">
+      <label for="f-name">Your Name</label>
+      <input type="text" id="f-name" name="name" autocomplete="name" />
+    </div>
+
+    <div class="field">
+      <label for="f-email">Your Email</label>
+      <input type="email" id="f-email" name="email" autocomplete="email" />
+    </div>
+
+    <div class="field">
+      <label for="f-track">Title || Artist of the psalm recording you're evaluating<span class="required-mark">*</span>
+        <span class="hint">Start typing an artist or track title — every recording in the catalog is searchable, live from the sheet.</span>
+      </label>
+      <div class="combo">
+        <input type="text" id="f-track" placeholder="Begin typing Artist Name or Track Title" autocomplete="off" />
+        <div class="combo-list" id="track-list"></div>
+      </div>
+      <div class="combo-selected-tag" id="track-selected-tag"></div>
+      <div class="field-error" id="track-error">Please select a track from the list.</div>
+    </div>
+
+    <section>
+      <h2>Song Ratings</h2>
+      <p class="section-note">Choose the best rating for the psalm arrangement based on the following 3 criteria:</p>
+
+      <div class="field slider-field unanswered" data-slider="textualVariance">
+        <label>Textual Variance<span class="required-mark">*</span></label>
+        <input type="range" min="0" max="10" step="1" value="5" data-role="range" aria-label="Textual Variance, from Accommodated to Precise to English Translation" />
+        <div class="slider-labels">
+          <span>Accommodated</span>
+          <span>Precise to English Translation</span>
+        </div>
+        <div class="slider-value" data-role="value-label">Drag the slider to answer</div>
+        <button type="button" class="clear-link" data-role="clear">Clear</button>
+        <div class="field-error" data-role="error">This rating is required.</div>
+      </div>
+
+      <div class="field slider-field unanswered" data-slider="mood">
+        <label>Mood<span class="required-mark">*</span></label>
+        <input type="range" min="0" max="10" step="1" value="5" data-role="range" aria-label="Mood, from Dark, Pensive, Dramatic to Bright, Lively, Upbeat" />
+        <div class="slider-labels">
+          <span>Dark, Pensive, Dramatic</span>
+          <span>Bright, Lively, Upbeat</span>
+        </div>
+        <div class="slider-value" data-role="value-label">Drag the slider to answer</div>
+        <button type="button" class="clear-link" data-role="clear">Clear</button>
+        <div class="field-error" data-role="error">This rating is required.</div>
+      </div>
+
+      <div class="field slider-field unanswered" data-slider="congregational">
+        <label>Congregational<span class="required-mark">*</span></label>
+        <input type="range" min="0" max="10" step="1" value="5" data-role="range" aria-label="Congregational, from Difficult, Irregular to Easy, Regular Melody/Structure" />
+        <div class="slider-labels">
+          <span>Difficult, Irregular</span>
+          <span>Easy, Regular Melody/Structure</span>
+        </div>
+        <div class="slider-value" data-role="value-label">Drag the slider to answer</div>
+        <button type="button" class="clear-link" data-role="clear">Clear</button>
+        <div class="field-error" data-role="error">This rating is required.</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Style</h2>
+      <p class="section-note">Check any that apply.</p>
+      <div id="style-group">
+        <label class="checkbox-row"><input type="checkbox" name="style" value="Rock" /> Rock</label>
+        <label class="checkbox-row"><input type="checkbox" name="style" value="Hymn" /> Hymn</label>
+        <label class="checkbox-row"><input type="checkbox" name="style" value="Folk" /> Folk</label>
+        <label class="checkbox-row"><input type="checkbox" name="style" value="Alternative" /> Alternative</label>
+        <label class="checkbox-row"><input type="checkbox" name="style" value="CCM" /> CCM</label>
+        <label class="checkbox-row"><input type="checkbox" name="style" value="Other" /> Other</label>
+      </div>
+    </section>
+
+    <section>
+      <h2>Sheet Music / Chord Charts</h2>
+      <p class="section-note">Spend no more than 60 seconds Googling. Are any of the following available:</p>
+
+      <div class="field">
+        <div class="label">Availability</div>
+        <div id="avail-group">
+          <label class="checkbox-row"><input type="checkbox" name="availability" value="A user-uploaded chart / lead sheet / sheet music was found" /> A user-uploaded chart / lead sheet / sheet music was found</label>
+          <label class="checkbox-row"><input type="checkbox" name="availability" value="SongSelect had it" /> SongSelect had it</label>
+          <label class="checkbox-row"><input type="checkbox" name="availability" value="The publisher or artist had a version available" /> The publisher or artist had a version available</label>
+          <label class="checkbox-row"><input type="checkbox" name="availability" value="A paid version was found (no need to purchase, but it's good to know about)" /> A paid version was found (no need to purchase, but it's good to know about)</label>
+          <label class="checkbox-row"><input type="checkbox" name="availability" value="I have one to share (upload below)" /> I have one to share (upload below)</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="f-chart-link">Please paste the link to the best chart you found (if applicable)</label>
+        <input type="url" id="f-chart-link" placeholder="https://" />
+      </div>
+
+      <div class="field">
+        <div class="label">Upload a chart (only if you grant permission to share)</div>
+        <div class="dropzone" id="dropzone">
+          <div>Drag &amp; drop a file or <label for="f-chart-file">browse</label></div>
+          <input type="file" id="f-chart-file" style="display:none" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.gif" />
+          <div class="file-list" id="file-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Honeypot: real users leave this blank; visually hidden from people, still readable by simple bots -->
+    <div class="hp-field" aria-hidden="true">
+      <label for="f-website">Website</label>
+      <input type="text" id="f-website" name="website" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <div style="margin-top:32px;">
+      <button type="submit" id="submit-btn">Submit</button>
+      <div id="form-status"></div>
+    </div>
+  </form>
+
+  <footer class="made-with">Zion Psalter Evaluation Portal</footer>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  // ------------------------------------------------------------------
+  // CONFIG — paste your deployed Apps Script Web App URL here.
+  // ------------------------------------------------------------------
+  var CONFIG = {
+    API_URL: 'PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE'
+  };
+
+  var form = document.getElementById('eval-form');
+  var statusBox = document.getElementById('form-status');
+  var submitBtn = document.getElementById('submit-btn');
+
+  // ---------------- Autocomplete (Title || Artist) -------------------
+  var trackInput = document.getElementById('f-track');
+  var trackList = document.getElementById('track-list');
+  var trackTag = document.getElementById('track-selected-tag');
+  var trackError = document.getElementById('track-error');
+  var catalog = [];
+  var selectedTrack = null;
+  var activeIndex = -1;
+  var MAX_RESULTS = 50;
+
+  function loadCatalog(){
+    var url = CONFIG.API_URL + (CONFIG.API_URL.indexOf('?') > -1 ? '&' : '?') + 'action=catalog';
+    fetch(url)
+      .then(function(r){ return r.json(); })
+      .then(function(json){
+        if (json && json.ok) {
+          catalog = json.tracks || [];
+        } else {
+          console.error('Failed to load catalog:', json && json.error);
+        }
+      })
+      .catch(function(err){ console.error('Failed to load catalog:', err); });
+  }
+
+  function renderOptions(matches){
+    trackList.innerHTML = '';
+    activeIndex = -1;
+    if (!matches.length){
+      var empty = document.createElement('div');
+      empty.className = 'combo-empty';
+      empty.textContent = trackInput.value.trim() ? 'No matches found.' : 'Type to search the catalog.';
+      trackList.appendChild(empty);
+      trackList.classList.add('open');
+      return;
+    }
+    matches.slice(0, MAX_RESULTS).forEach(function(item, i){
+      var opt = document.createElement('div');
+      opt.className = 'combo-option';
+      opt.textContent = item.label;
+      opt.setAttribute('data-index', String(i));
+      opt.addEventListener('mousedown', function(e){
+        e.preventDefault();
+        selectTrack(item);
+      });
+      trackList.appendChild(opt);
+    });
+    trackList.classList.add('open');
+  }
+
+  function filterCatalog(q){
+    q = q.trim().toLowerCase();
+    if (!q) return [];
+    var starts = [], contains = [];
+    catalog.forEach(function(item){
+      var l = item.label.toLowerCase();
+      if (l.indexOf(q) === 0) starts.push(item);
+      else if (l.indexOf(q) > -1) contains.push(item);
+    });
+    return starts.concat(contains);
+  }
+
+  function selectTrack(item){
+    selectedTrack = item;
+    trackInput.value = item.label;
+    trackTag.textContent = 'Selected: ' + item.label;
+    trackTag.classList.add('show');
+    trackError.classList.remove('show');
+    trackList.classList.remove('open');
+  }
+
+  trackInput.addEventListener('input', function(){
+    selectedTrack = null;
+    trackTag.classList.remove('show');
+    renderOptions(filterCatalog(trackInput.value));
+  });
+
+  trackInput.addEventListener('focus', function(){
+    if (trackInput.value.trim()) renderOptions(filterCatalog(trackInput.value));
+  });
+
+  trackInput.addEventListener('keydown', function(e){
+    var opts = Array.prototype.slice.call(trackList.querySelectorAll('.combo-option'));
+    if (!opts.length) return;
+    if (e.key === 'ArrowDown'){
+      e.preventDefault();
+      activeIndex = Math.min(activeIndex + 1, opts.length - 1);
+      opts.forEach(function(o,i){ o.classList.toggle('active', i===activeIndex); });
+    } else if (e.key === 'ArrowUp'){
+      e.preventDefault();
+      activeIndex = Math.max(activeIndex - 1, 0);
+      opts.forEach(function(o,i){ o.classList.toggle('active', i===activeIndex); });
+    } else if (e.key === 'Enter'){
+      if (activeIndex > -1 && opts[activeIndex]){
+        e.preventDefault();
+        var matches = filterCatalog(trackInput.value);
+        selectTrack(matches[activeIndex]);
+      }
+    } else if (e.key === 'Escape'){
+      trackList.classList.remove('open');
+    }
+  });
+
+  document.addEventListener('click', function(e){
+    if (!e.target.closest('.combo')) trackList.classList.remove('open');
+  });
+
+  // ---------------- Sliders -------------------------------------------
+  var sliderFields = Array.prototype.slice.call(document.querySelectorAll('.slider-field'));
+  var sliderState = {}; // key -> value or null
+
+  sliderFields.forEach(function(field){
+    var key = field.getAttribute('data-slider');
+    var range = field.querySelector('[data-role="range"]');
+    var valueLabel = field.querySelector('[data-role="value-label"]');
+    var clearBtn = field.querySelector('[data-role="clear"]');
+    var errorEl = field.querySelector('[data-role="error"]');
+    sliderState[key] = null;
+
+    range.addEventListener('input', function(){
+      field.classList.remove('unanswered');
+      // Internally we still store a 0-10 value (needed for averaging in the
+      // sheet), but nothing numeric is ever shown in the UI — the slider
+      // position itself is the answer.
+      sliderState[key] = Number(range.value);
+      valueLabel.style.visibility = 'hidden';
+      errorEl.classList.remove('show');
+    });
+
+    clearBtn.addEventListener('click', function(){
+      field.classList.add('unanswered');
+      sliderState[key] = null;
+      valueLabel.style.visibility = 'visible';
+      range.value = 5;
+    });
+  });
+
+  // ---------------- File upload ----------------------------------------
+  var fileInput = document.getElementById('f-chart-file');
+  var dropzone = document.getElementById('dropzone');
+  var fileListEl = document.getElementById('file-list');
+  var chartFileData = null; // { name, mimeType, base64 }
+  var MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+
+  function handleFile(file){
+    if (!file) return;
+    if (file.size > MAX_UPLOAD_BYTES){
+      fileListEl.textContent = 'That file is larger than 10MB — please choose a smaller one.';
+      chartFileData = null;
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(){
+      var base64 = String(reader.result).split(',')[1];
+      chartFileData = { name: file.name, mimeType: file.type, base64: base64 };
+      fileListEl.textContent = 'Attached: ' + file.name;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  fileInput.addEventListener('change', function(){ handleFile(fileInput.files[0]); });
+  ['dragenter','dragover'].forEach(function(evt){
+    dropzone.addEventListener(evt, function(e){ e.preventDefault(); dropzone.classList.add('drag'); });
+  });
+  ['dragleave','drop'].forEach(function(evt){
+    dropzone.addEventListener(evt, function(e){ e.preventDefault(); dropzone.classList.remove('drag'); });
+  });
+  dropzone.addEventListener('drop', function(e){
+    var file = e.dataTransfer.files && e.dataTransfer.files[0];
+    handleFile(file);
+  });
+
+  // ---------------- Submit ----------------------------------------------
+  function getCheckedValues(name){
+    return Array.prototype.slice.call(document.querySelectorAll('input[name="' + name + '"]:checked'))
+      .map(function(el){ return el.value; });
+  }
+
+  function showStatus(kind, msg){
+    statusBox.className = 'show ' + kind;
+    statusBox.textContent = msg;
+  }
+
+  function validate(){
+    var ok = true;
+    if (!selectedTrack){
+      trackError.classList.add('show');
+      ok = false;
+    }
+    sliderFields.forEach(function(field){
+      var key = field.getAttribute('data-slider');
+      var errorEl = field.querySelector('[data-role="error"]');
+      if (sliderState[key] === null){
+        errorEl.classList.add('show');
+        ok = false;
+      }
+    });
+    return ok;
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    statusBox.className = '';
+
+    if (CONFIG.API_URL.indexOf('PASTE_YOUR') === 0){
+      showStatus('error', 'Form is not configured yet: set CONFIG.API_URL to your Apps Script Web App URL.');
+      return;
+    }
+
+    if (!validate()){
+      showStatus('error', 'Please fix the highlighted fields before submitting.');
+      return;
+    }
+
+    var payload = {
+      name: document.getElementById('f-name').value.trim(),
+      email: document.getElementById('f-email').value.trim(),
+      trackArtist: selectedTrack ? selectedTrack.label : '',
+      textualVariance: sliderState.textualVariance,
+      mood: sliderState.mood,
+      congregational: sliderState.congregational,
+      style: getCheckedValues('style'),
+      chartAvailability: getCheckedValues('availability'),
+      chartLink: document.getElementById('f-chart-link').value.trim(),
+      chartFile: chartFileData,
+      website: document.getElementById('f-website').value // honeypot
+    };
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting…';
+
+    // Use text/plain to avoid a CORS preflight against Apps Script
+    // (which doesn't implement doOptions). The server still JSON.parses the body.
+    fetch(CONFIG.API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    })
+      .then(function(r){ return r.json(); })
+      .then(function(json){
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit';
+        if (json && json.ok){
+          showStatus('ok', 'Thank you — your evaluation was recorded.');
+          form.reset();
+          selectedTrack = null;
+          trackTag.classList.remove('show');
+          chartFileData = null;
+          fileListEl.textContent = '';
+          sliderFields.forEach(function(field){
+            var key = field.getAttribute('data-slider');
+            field.classList.add('unanswered');
+            sliderState[key] = null;
+            field.querySelector('[data-role="value-label"]').style.visibility = 'visible';
+            field.querySelector('[data-role="range"]').value = 5;
+          });
+        } else {
+          showStatus('error', (json && json.error) || 'Something went wrong. Please try again.');
+        }
+      })
+      .catch(function(err){
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit';
+        showStatus('error', 'Network error — please try again. (' + err + ')');
+      });
+  });
+
+  loadCatalog();
+})();
+</script>
+</body>
+</html>
